@@ -1,16 +1,39 @@
-# This is a sample Python script.
+import datetime
+import time
+from tkinter import *
+from tkcalendar import Calendar
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Create Object
+root = Tk()
 
+# Set geometry
+root.geometry("400x400")
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# Add Calendar
+cal = Calendar(root, selectmode = 'day',
+			year = 2023, month = 12,
+			day = 27)
 
+cal.pack(pady = 20)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def getCalenderDate():
+	gelenDate = cal.get_date()
+	cizgisizZaman = gelenDate.replace('/','')
+	ay = cizgisizZaman[:2]
+	gun = cizgisizZaman[2:4]
+	a = cizgisizZaman[4:6]
+	str(a)
+	yil = "20" + a
+	x = datetime.datetime(int(yil), int(ay), int(gun))
+	ts = time.mktime(x.timetuple())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+	date.config(text = "Selected timestamp is: " + str(ts) + "\n Selected Date is: " + str(gelenDate))
+
+# Add Button and Label
+Button(root, text = "Get Date",command = getCalenderDate).pack(pady = 20)
+
+date = Label(root, text = "")
+date.pack(pady = 20)
+
+# Execute Tkinter
+root.mainloop()
