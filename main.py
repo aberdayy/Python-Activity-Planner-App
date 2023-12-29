@@ -60,13 +60,17 @@ def add_task():
 #Beni de bu kod ile beraber topraga gomun
 	def save_note():
 		task_dates, task_description = get_task_details()
+		string_date = []
+		for date in task_dates:
+			x = date.strftime('%m/%d/%Y')
+			string_date.append(x)
 		try:
-			check_duplicate_date(task_dates, 'task_data.csv')
+			check_duplicate_date(string_date, 'task_data.csv')
 			# If no exception is raised, proceed to add the task for this date
 			print("no exception")
-			save_to_csv(task_dates, task_description)
+			save_to_csv(string_date, task_description)
 		except Exception as e:
-			print("hata burada")
+			print(f"hata buradan geliyor. Gelen hata =  {e}")
 		# Print the exception message if a duplicate date is found
 	startDate = Label(newWindow, text="Task Start Date : ").place(x=60, y=10)
 	endDate = Label(newWindow, text="Task End Date : ").place(x=60, y=50)
