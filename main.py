@@ -1,8 +1,10 @@
 import datetime
 import tkinter
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import *
-from saveDefinedTask import save_to_csv  # Import the function
+from saveDefinedTask import save_to_csv
+from exceptionHandler import  check_duplicate_date
 import tkcalendar
 from displayController import read_task_data
 
@@ -22,9 +24,7 @@ def display():
 
 	# Inserting each task into the listbox
 	for task in tasks:
-		print(task[0])
-		gorev = datetime.datetime.fromtimestamp(int(task[0]))
-		listbox.insert(tkinter.END, f"Dates: {gorev}, Description: {task[1]}")
+		listbox.insert(tkinter.END, f"Dates: {task}")
 
 '''datetime.fromtimestamp()
 '''
@@ -41,11 +41,12 @@ def add_task():
 		dates = []
 		diff = (stop - start).days
 		for i in range(diff + 1):
-			day = start + timedelta(days=i)
+			day = start + datetime.timedelta(days=i)
 			dates.append(day)
 		if dates:
 			return dates
 		else:
+			messagebox.showinfo("error", "Make sure the end date is later than start date")
 			print('Make sure the end date is later than start date')
 			return None
 
@@ -54,9 +55,19 @@ def add_task():
 		task_description = entry.get()
 		return task_dates, task_description
 
+
+
+#Beni de bu kod ile beraber topraga gomun
 	def save_note():
 		task_dates, task_description = get_task_details()
-		save_to_csv(task_dates, task_description)
+		try:
+			check_duplicate_date(task_dates, 'task_data.csv')
+			# If no exception is raised, proceed to add the task for this date
+			print("no exception")
+			save_to_csv(task_dates, task_description)
+		except Exception as e:
+			print("hata burada")
+		# Print the exception message if a duplicate date is found
 	startDate = Label(newWindow, text="Task Start Date : ").place(x=60, y=10)
 	endDate = Label(newWindow, text="Task End Date : ").place(x=60, y=50)
 
