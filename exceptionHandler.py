@@ -48,7 +48,7 @@ def check_duplicate_date(task_dates, csv_file):
     common_values = set(task_day_values).intersection(stored_day_values)
 
     if common_values:
-        print(f"There are common integer values in the lists: {common_values}")
+        raise Exception("These dates are already has a task assigned!")
         return True  # Return True if there are common dates
     else:
         print("There are no common integer values in the lists.")
