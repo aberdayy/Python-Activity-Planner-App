@@ -102,7 +102,7 @@ def show_weekly():
 
 def show_biweekly():
     tasks = read_task_data()  # Fetch tasks from CSV
-    _, _,_, biweekly_tasks = process_csv('task_data.csv')
+    _, _,biweekly_tasks = process_csv('task_data.csv')
     display_tasks(biweekly_tasks)
 
 
