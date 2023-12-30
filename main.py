@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import tkinter
 from tkinter import *
 from tkinter import messagebox
@@ -50,25 +50,25 @@ def categorize_dates(dates):
             if start not in daily_data:
                 daily_data[start] = []
             daily_data[start].append(task_info)
-            start += datetime.timedelta(days=1)
+            start += timedelta(days=1)
 
         # Weekly
         start = parse_date(start_date)
         while start <= end:
-            week_start = start - datetime.timedelta(days=start.weekday())
+            week_start = start - timedelta(days=start.weekday())
             if week_start not in weekly_data:
                 weekly_data[week_start] = []
             weekly_data[week_start].append(task_info)
-            start += datetime.timedelta(weeks=1)
+            start += timedelta(weeks=1)
 
         # Bi-weekly
         start = parse_date(start_date)
         while start <= end:
-            biweek_start = start - datetime.timedelta(days=start.weekday())
+            biweek_start = start - timedelta(days=start.weekday())
             if biweek_start not in biweekly_data:
                 biweekly_data[biweek_start] = []
             biweekly_data[biweek_start].append(task_info)
-            start += datetime.timedelta(weeks=2)
+            start += timedelta(weeks=2)
 
     return daily_data, weekly_data, biweekly_data
 
@@ -127,7 +127,7 @@ def add_task():
 		dates = []
 		diff = (stop - start).days
 		for i in range(diff + 1):
-			day = start + datetime.timedelta(days=i)
+			day = start + timedelta(days=i)
 			dates.append(day)
 		if dates:
 			return dates
