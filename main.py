@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import *
 from saveDefinedTask import save_to_csv
-from exceptionHandler import  check_duplicate_date
+from exceptionHandler import check_duplicate_date
 import tkcalendar
 from displayController import read_task_data
 import csv
@@ -12,6 +12,8 @@ import csv
 root = tkinter.Tk()
 root.title("Task Manager")
 root.geometry("500x500")
+
+
 # Function to convert string dates to datetime objects
 def parse_date(date_str):
     return datetime.strptime(date_str, '%m/%d/%Y')
@@ -33,6 +35,7 @@ def display_tasks(tasks):
             tree.insert('', 'end', text=date.strftime('%m/%d/%Y'), values=task)
 
     tree.pack(expand=True, fill='both')
+
 
 # Function to categorize dates into daily, weekly, or bi-weekly
 def categorize_dates(dates):
@@ -72,6 +75,7 @@ def categorize_dates(dates):
 
     return daily_data, weekly_data, biweekly_data
 
+
 # Read CSV file and categorize dates
 def process_csv(file_path):
     with open(file_path, 'r') as file:
@@ -89,98 +93,99 @@ def show_daily():
     daily_tasks, _, _ = process_csv('task_data.csv')
     display_tasks(daily_tasks)
 
+
 def show_weekly():
     tasks = read_task_data()  # Fetch tasks from CSV
     _, weekly_tasks, _ = process_csv('task_data.csv')
     display_tasks(weekly_tasks)
 
+
 def show_biweekly():
     tasks = read_task_data()  # Fetch tasks from CSV
-    _, _, biweekly_tasks = process_csv('task_data.csv')
+    _, _,_, biweekly_tasks = process_csv('task_data.csv')
     display_tasks(biweekly_tasks)
 
+
 def display():
-	tasks = read_task_data()  # Fetch tasks from CSV
-	new_window = Toplevel(root)  # Create a new window
-	new_window.title("Task Display")  # Set the title of the new window
+    tasks = read_task_data()  # Fetch tasks from CSV
+    new_window = Toplevel(root)  # Create a new window
+    new_window.title("Task Display")  # Set the title of the new window
 
-	# Creating a Tkinter listbox to display tasks in the new window
-	listbox = tkinter.Listbox(new_window, width=100, height=20)
-	listbox.pack(padx=20, pady=20)
+    # Creating a Tkinter listbox to display tasks in the new window
+    listbox = tkinter.Listbox(new_window, width=100, height=20)
+    listbox.pack(padx=20, pady=20)
 
-	# Inserting each task into the listbox
-	for task in tasks:
-		listbox.insert(tkinter.END, f"Dates: {task}")
+    # Inserting each task into the listbox
+    for task in tasks:
+        listbox.insert(tkinter.END, f"Dates: {task}")
+
 
 '''datetime.fromtimestamp()
 '''
+
+
 def add_task():
-	newWindow = Toplevel(root)
-	# sets the title of the
-	# Toplevel widget
-	newWindow.title("Add Task ")
+    newWindow = Toplevel(root)
+    # sets the title of the
+    # Toplevel widget
+    newWindow.title("Add Task ")
 
-	# sets the geometry of toplevel
-	newWindow.geometry("500x500")
+    # sets the geometry of toplevel
+    newWindow.geometry("500x500")
 
-	def date_range(start, stop):
-		dates = []
-		diff = (stop - start).days
-		for i in range(diff + 1):
-			day = start + timedelta(days=i)
-			dates.append(day)
-		if dates:
-			return dates
-		else:
-			messagebox.showinfo("error", "Make sure the end date is later than start date")
-			print('Make sure the end date is later than start date')
-			return None
+    def date_range(start, stop):
+        dates = []
+        diff = (stop - start).days
+        for i in range(diff + 1):
+            day = start + timedelta(days=i)
+            dates.append(day)
+        if dates:
+            return dates
+        else:
+            messagebox.showinfo("error", "Make sure the end date is later than start date")
+            print('Make sure the end date is later than start date')
+            return None
 
-	def get_task_details():
-		task_dates = date_range(date1.get_date(), date2.get_date())
-		task_description = entry.get()
-		return task_dates, task_description
+    def get_task_details():
+        task_dates = date_range(date1.get_date(), date2.get_date())
+        task_description = entry.get()
+        return task_dates, task_description
 
+    # Beni de bu kod ile beraber topraga gomun
+    def save_note():
+        task_dates, task_description = get_task_details()
+        string_date = []
+        for date in task_dates:
+            x = date.strftime('%m/%d/%Y')
+            string_date.append(x)
+        try:
+            check_duplicate_date(string_date, 'task_data.csv')
+            # If no exception is raised, proceed to add the task for this date
+            save_to_csv(string_date, task_description)
+            messagebox.showinfo("Succesfull", "Your task is succcesfully saved! You can now close these windows.")
+        except Exception as e:
+            messagebox.showinfo("Error Creating Note", f"Warning! => {e}")
 
+    # Print the exception message if a duplicate date is found
+    startDate = Label(newWindow, text="Task Start Date : ").place(x=60, y=10)
+    endDate = Label(newWindow, text="Task End Date : ").place(x=60, y=50)
 
-#Beni de bu kod ile beraber topraga gomun
-	def save_note():
-		task_dates, task_description = get_task_details()
-		string_date = []
-		for date in task_dates:
-			x = date.strftime('%m/%d/%Y')
-			string_date.append(x)
-		try:
-			check_duplicate_date(string_date, 'task_data.csv')
-			# If no exception is raised, proceed to add the task for this date
-			save_to_csv(string_date, task_description)
-			messagebox.showinfo("Succesfull", "Your task is succcesfully saved! You can now close these windows.")
-		except Exception as e:
-			messagebox.showinfo("Error Creating Note",f"Warning! => {e}")
+    date1 = tkcalendar.DateEntry(newWindow)
+    date1.pack(padx=10, pady=10)
+    date2 = tkcalendar.DateEntry(newWindow)
+    date2.pack(padx=10, pady=10)
 
-		# Print the exception message if a duplicate date is found
-	startDate = Label(newWindow, text="Task Start Date : ").place(x=60, y=10)
-	endDate = Label(newWindow, text="Task End Date : ").place(x=60, y=50)
+    Button(newWindow, text='Save Task Dates', command=lambda: date_range(date1.get_date(), date2.get_date())).pack()
 
-	date1 = tkcalendar.DateEntry(newWindow)
-	date1.pack(padx=10, pady=10)
-	date2 = tkcalendar.DateEntry(newWindow)
-	date2.pack(padx=10, pady=10)
+    label = Label(newWindow, text="Task Description:").pack()
 
-	Button(newWindow, text='Save Task Dates', command=lambda: date_range(date1.get_date(), date2.get_date())).pack()
+    entry = Entry(newWindow, width=40)
+    entry.focus_set()
+    entry.pack()
 
-	label = Label(newWindow, text="Task Description:").pack()
+    Button(newWindow, text="Save Description", width=20).pack(pady=20)
 
-	entry = Entry(newWindow, width=40)
-	entry.focus_set()
-	entry.pack()
-
-	Button(newWindow, text="Save Description", width=20).pack(pady=20)
-
-	Button(newWindow, text="Save note", width=50, command=save_note).pack(pady=50)
-
-
-
+    Button(newWindow, text="Save note", width=50, command=save_note).pack(pady=50)
 
 
 add_task_button = tkinter.Button(root, text="Add Task", command=add_task)
