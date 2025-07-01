@@ -15,3 +15,5 @@ Hint : Task should be defined as a Class and lt, gt, etc should be defined on da
 Submission:
     Notebook or py file and pickle file.
     A text script explaining design considerations, flaws and problems.
+    
+[Activity Planner Docs.pdf](https://github.com/user-attachments/files/21006177/Activity.Planner.Docs.pdf)
